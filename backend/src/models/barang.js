@@ -15,6 +15,11 @@ export const createNewBarang = (data) => {
     return connection.execute(query);
 };
 
+export const createNewBarangMasuk = (data) => {
+    const query = `INSERT INTO barang (kode, nama, stok, deskripsi) VALUES('${data.kode_barang}', '${data.nama}', ${data.jumlah} ,'${data.deskripsi}')`;
+    return connection.execute(query);
+};
+
 export const updateBarang = (data, kode) => {
     const query = `UPDATE barang 
                 SET nama = '${data.nama}', stok = ${data.stok}, deskripsi = '${data.deskripsi}' 
@@ -24,5 +29,19 @@ export const updateBarang = (data, kode) => {
 
 export const deleteBarang = (kode) => {
     const query = `DELETE FROM barang WHERE kode = '${kode}'`;
+    return connection.execute(query);
+};
+
+export const tambahStok = (data, kode) => {
+    const query = `UPDATE barang 
+    SET stok = stok + ${data.jumlah} 
+    WHERE kode = '${kode}'`;
+    return connection.execute(query);
+};
+
+export const kurangStok = (data, kode) => {
+    const query = `UPDATE barang 
+    SET stok = stok - ${data.jumlah} 
+    WHERE kode = '${kode}'`;
     return connection.execute(query);
 };
