@@ -3,6 +3,7 @@ import {
     getBarang as getBarangModel,
     createNewBarang as createNewBarangModel,
     updateBarang as updateBarangModel,
+    deleteBarang as deleteBarangModel,
 } from "../models/barang.js";
 
 export const getAllBarang = async (req, res) => {
@@ -25,11 +26,10 @@ export const getBarang = async (req, res) => {
         const { kode } = req.params;
         const [data] = await getBarangModel(kode);
 
-        if (data === null || undefined || data.length <= 0) {
-            res.status(404).json({
+        if (data.length <= 0) {
+            return res.status(404).json({
                 message: "Barang tidak ditemukan",
             });
-            return;
         }
 
         res.status(200).json({
@@ -48,16 +48,17 @@ export const createNewBarang = async (req, res) => {
     try {
         const { body } = req;
         const [data] = await getBarangModel(body.kode);
-        if (data.length != 0)
-            return res.status(500).json({
+        if (data.length > 0) {
+            return res.status(404).json({
                 message: "Barang sudah ada",
+                data,
             });
+        }
 
         await createNewBarangModel(body);
 
         res.status(200).json({
             message: "Created",
-            data: body,
         });
     } catch (error) {
         res.status(500).json({
@@ -73,18 +74,41 @@ export const updateBarang = async (req, res) => {
         const { kode } = req.params;
         const [data] = await getBarangModel(kode);
 
-        if (data === null || undefined || data.length <= 0) {
-            res.status(404).json({
+        if (data.length <= 0) {
+            return res.status(404).json({
                 message: "Barang tidak ditemukan",
             });
-            return;
         }
 
         await updateBarangModel(body, kode);
 
         res.status(200).json({
             message: "Updated",
-            data: data,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Terjadi error",
+            error,
+        });
+    }
+};
+
+export const deleteBarang = async (req, res) => {
+    try {
+        const { kode } = req.params;
+        const [data] = await getBarangModel(kode);
+
+        if (data.length <= 0) {
+            return res.status(404).json({
+                message: "Barang tidak ditemukan",
+            });
+        }
+
+        await deleteBarangModel(kode);
+
+        res.status(200).json({
+            message: "Deleted",
+            data,
         });
     } catch (error) {
         res.status(500).json({

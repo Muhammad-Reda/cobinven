@@ -1,24 +1,29 @@
 import express from "express";
+import { accessValidation } from "../middleware/validation.js";
 
 import {
     getAllBarang,
     getBarang,
     createNewBarang,
     updateBarang,
+    deleteBarang,
 } from "../controller/barang.js";
 
 const router = express.Router();
 
 //GET all barang
-router.get("/", getAllBarang);
+router.get("/", accessValidation, getAllBarang);
 
 //Get barang by kode
-router.get("/:kode", getBarang);
+router.get("/:kode", accessValidation, getBarang);
 
 //Create new barang
-router.post("/", createNewBarang);
+router.post("/", accessValidation, createNewBarang);
 
 //update barang
-router.patch("/:kode", updateBarang);
+router.patch("/:kode", accessValidation, updateBarang);
+
+//Delete barang
+router.delete("/:kode", accessValidation, deleteBarang);
 
 export default router;

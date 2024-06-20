@@ -6,7 +6,7 @@ export const getAllBarang = () => {
 };
 
 export const getBarang = (kode) => {
-    const query = `SELECT * FROM barang WHERE kode = ${kode}`;
+    const query = `SELECT * FROM barang WHERE kode = '${kode}'`;
     return connection.execute(query);
 };
 
@@ -19,5 +19,10 @@ export const updateBarang = (data, kode) => {
     const query = `UPDATE barang 
                 SET nama = '${data.nama}', stok = ${data.stok}, deskripsi = '${data.deskripsi}' 
                 WHERE kode = '${kode}'`;
+    return connection.execute(query);
+};
+
+export const deleteBarang = (kode) => {
+    const query = `DELETE FROM barang WHERE kode = '${kode}'`;
     return connection.execute(query);
 };
