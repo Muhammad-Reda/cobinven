@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Inven from "../assets/Inven.jpg";
 import { Navigate } from "react-router-dom";
-import ButtonDefault from "../components/ButtonDefault";
+import ButtonDefault from "../components/ui/ButtonDefault";
 
 function Login() {
     const [toHome, setToHome] = useState(false);

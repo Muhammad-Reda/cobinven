@@ -1,7 +1,32 @@
-import ButtonTambah from "../components/ButtonTambah";
-import Table from "../components/Table";
-
+import TableBarang from "../components/ui/TableBarang";
+import ModalTambahBarang from "../components/ModalTambahBarang";
 function Barang() {
+    const data = [
+        {
+            id: 1,
+            nama: "batu",
+            stok: 3,
+            deskripsi: "Desc",
+        },
+        {
+            id: 2,
+            nama: "batu",
+            stok: 3,
+            deskripsi: "Desc",
+        },
+        {
+            id: 3,
+            nama: "batu",
+            stok: 3,
+            deskripsi: "Desc",
+        },
+        {
+            id: 4,
+            nama: "batu",
+            stok: 3,
+            deskripsi: "Desc",
+        },
+    ];
     const handleClick = () => {
         // e.preventDefault();
         alert("Haii");
@@ -13,14 +38,10 @@ function Barang() {
                 Daftar data barang
             </h2>
             <div className="flex justify-end">
-                <ButtonTambah
-                    type="button"
-                    callback={handleClick}
-                    content="Tambah"
-                />
+                <ModalTambahBarang />
             </div>
 
-            <Table />
+            <TableBarang data={data} />
         </>
     );
 }
