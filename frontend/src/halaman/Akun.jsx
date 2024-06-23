@@ -1,5 +1,7 @@
 import TableAkun from "../components/ui/TableAkun";
 import ModalTambahAkun from "../components/ModalTambahAkun";
+import Search from "../components/ui/Search";
+
 function Akun() {
     const data = [
         {
@@ -26,10 +28,11 @@ function Akun() {
 
     return (
         <>
-            <h2 className=" uppercase text-center font-bold text-3xl p-4">
+            <h2 className=" uppercase  font-bold text-3xl p-4 mb-8">
                 Daftar data akun
             </h2>
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+                <Search placeholder="Cari username" />
                 <ModalTambahAkun />
             </div>
 

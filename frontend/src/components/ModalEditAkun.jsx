@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import ButtonYellow from "./ui/ButtonYellow";
 import ButtonGreen from "./ui/ButtonGreen";
-import ButtonXClose from "./ui/ButtonXClose";
 import ButtonRed from "./ui/ButtonRed";
+import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
 
-import { IoIosAdd } from "react-icons/io";
+import { HiOutlinePencilAlt } from "react-icons/hi";
 
-function ModalTambahAkun() {
+function ModalEditAkun() {
     const [showModal, setShowModal] = useState(false);
     const {
         register,
@@ -23,10 +24,10 @@ function ModalTambahAkun() {
 
     return (
         <>
-            <ButtonGreen
+            <ButtonYellow
                 type="button"
                 callback={() => setShowModal(true)}
-                content=<IoIosAdd size={20} />
+                content=<HiOutlinePencilAlt />
             />
             {showModal ? (
                 <>
@@ -37,7 +38,7 @@ function ModalTambahAkun() {
                                 {/*header*/}
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                                     <h3 className="text-3xl font-semibold uppercase">
-                                        Tambah Data Akun
+                                        Ubah Data Akun
                                     </h3>
                                     <ButtonXClose
                                         callback={() => setShowModal(false)}
@@ -110,4 +111,4 @@ function ModalTambahAkun() {
     );
 }
 
-export default ModalTambahAkun;
+export default ModalEditAkun;

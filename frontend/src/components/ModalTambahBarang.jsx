@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { IoIosAdd } from "react-icons/io";
 
@@ -9,6 +10,17 @@ import Input from "./ui/Input";
 
 function ModalTambahBarang() {
     const [showModal, setShowModal] = useState(false);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm();
+
+    const handleClickSuccess = () => {
+        setShowModal(false);
+    };
+
     return (
         <>
             <ButtonGreen
@@ -32,7 +44,14 @@ function ModalTambahBarang() {
                                     />
                                 </div>
                                 {/*body*/}
-                                <form className="p-4 md:p-5">
+                                <form
+                                    onSubmit={handleSubmit(() => {
+                                        reset();
+                                        alert("Handle submit");
+                                        setShowModal(false);
+                                    })}
+                                    className="p-4 md:p-5"
+                                >
                                     <div className="grid gap-4 mb-4 grid-cols-2">
                                         <Input
                                             label="Kode"
@@ -41,39 +60,46 @@ function ModalTambahBarang() {
                                             name="kode"
                                             id="kode"
                                             placeholder="Kode barang"
-                                            required=""
+                                            register={register}
+                                            errors={errors}
+                                            required
                                         />
                                         <Input
-                                            label="nama"
+                                            label="Nama"
                                             htmlFor="nama"
                                             type="text"
                                             name="nama"
                                             id="nama"
                                             placeholder="Nama barang"
-                                            required=""
+                                            register={register}
+                                            errors={errors}
+                                            required
                                         />
                                         <Input
-                                            label="stok"
+                                            label="Stok"
                                             htmlFor="stok"
                                             type="number"
                                             name="stok"
                                             id="stok"
                                             placeholder="Stok barang"
-                                            required=""
+                                            register={register}
+                                            errors={errors}
+                                            required
                                         />
                                         <Input
                                             label="Deskripsi"
-                                            htmlFor="Deskripsi"
+                                            htmlFor="deskripsi"
                                             type="text"
-                                            name="Deskripsi"
-                                            id="Deskripsi"
+                                            name="deskripsi"
+                                            id="deskripsi"
                                             placeholder="Deskripsi"
-                                            required=""
+                                            register={register}
+                                            errors={errors}
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                         <ButtonRed
-                                            type="buton"
+                                            type="button"
                                             content="Close"
                                             callback={() => setShowModal(false)}
                                         />
@@ -81,7 +107,6 @@ function ModalTambahBarang() {
                                         <ButtonGreen
                                             type="submit"
                                             content="SAVE CHANGES"
-                                            callback={() => setShowModal(false)}
                                         />
                                     </div>
                                 </form>

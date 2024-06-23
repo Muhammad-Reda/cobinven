@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SidebarData } from "./SidebarData";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
     const [click, setClick] = useState(false);
@@ -11,27 +11,31 @@ function Navbar() {
             <div className="flex items-start h-screen">
                 <div
                     className={`h-[100vh] shadow-2xl text-gray-400 text-[18px] transition-all duration-300 ${
-                        click && "w-[50px]"
+                        click && "w-[80px]"
                     }`}
                 >
                     <div className="flex items-start gap-[20px] p-4">
-                        <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-lg p-[4px] items-center transition-all duration-300"></div>
+                        <div className="bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg p-[4px] items-center transition-all duration-300"></div>
                         {!click && (
-                            <p className="text-blue-600 text-[20px] font-semibold">
+                            <p className="text-gray-600 text-[20px] font-semibold">
                                 Inventory App
                             </p>
                         )}
                     </div>
-                    <ul className="flex flex-col gap-14 p-4 mt-10">
+                    <ul className="flex flex-col gap-7 p-4 mt-10 rounded-lg">
                         {SidebarData.map((item) => (
-                            <Link
+                            <NavLink
                                 to={item.path}
-                                className="flex items-center gap-x-2 transition-all duration-300 text-black"
+                                className={({ isActive }) =>
+                                    `flex items-center gap-x-3 transition-all duration-300 text-black p-3 b rounded-md hover:bg-gray-100 ${
+                                        isActive ? "bg-gray-200" : ""
+                                    }`
+                                }
                                 key={item.id}
                             >
                                 <span title={item.title}>{item.icon}</span>
                                 {!click && item.title}
-                            </Link>
+                            </NavLink>
                         ))}
                     </ul>
                 </div>

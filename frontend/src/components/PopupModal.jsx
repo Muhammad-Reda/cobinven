@@ -25,12 +25,6 @@ export default function PopupModal() {
                                     <div className="flex-1 flex justify-center">
                                         <CgDanger size={60} color="red" />
                                     </div>
-                                    <button
-                                        className="p-1 ml-auto bg-transparent border-0 text-black opacity-60 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                        onClick={() => setShowModal(false)}
-                                    >
-                                        <IoIosClose />
-                                    </button>
                                 </div>
                                 {/*body*/}
                                 <div className="relative p-6 flex-auto">
@@ -40,15 +34,15 @@ export default function PopupModal() {
                                     </p>
                                 </div>
                                 {/*footer*/}
-                                <div className="flex items-center justify-center p-4 border-t border-solid border-blueGray-200 rounded-b">
-                                    <div className=" pr-2 pl-2">
+                                <div className="flex items-center justify-end p-4 border-t border-solid border-blueGray-200 rounded-b">
+                                    <div>
                                         <ButtonRed
                                             type="button"
                                             callback={() => setShowModal(false)}
                                             content="Yes"
                                         />
                                     </div>
-                                    <div className=" pr-2 pl-2">
+                                    <div>
                                         <ButtonGreen
                                             type="button"
                                             callback={() => setShowModal(false)}

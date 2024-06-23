@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import ButtonYellow from "./ui/ButtonYellow";
 import ButtonGreen from "./ui/ButtonGreen";
-import ButtonXClose from "./ui/ButtonXClose";
 import ButtonRed from "./ui/ButtonRed";
+import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
 
-import { IoIosAdd } from "react-icons/io";
+import { HiOutlinePencilAlt } from "react-icons/hi";
 
-function ModalTambahAkun() {
+function ModalEditBarang() {
     const [showModal, setShowModal] = useState(false);
     const {
         register,
@@ -23,10 +24,10 @@ function ModalTambahAkun() {
 
     return (
         <>
-            <ButtonGreen
+            <ButtonYellow
                 type="button"
                 callback={() => setShowModal(true)}
-                content=<IoIosAdd size={20} />
+                content=<HiOutlinePencilAlt />
             />
             {showModal ? (
                 <>
@@ -37,7 +38,7 @@ function ModalTambahAkun() {
                                 {/*header*/}
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                                     <h3 className="text-3xl font-semibold uppercase">
-                                        Tambah Data Akun
+                                        Ubah Data Barang
                                     </h3>
                                     <ButtonXClose
                                         callback={() => setShowModal(false)}
@@ -54,37 +55,36 @@ function ModalTambahAkun() {
                                 >
                                     <div className="grid gap-4 mb-4 grid-cols-2">
                                         <Input
-                                            label="Username"
-                                            htmlFor="username"
+                                            label="Nama"
+                                            htmlFor="nama"
                                             type="text"
-                                            name="username"
-                                            id="username"
-                                            placeholder="Username Akun"
+                                            name="nama"
+                                            id="nama"
+                                            placeholder="Nama barang"
                                             register={register}
                                             errors={errors}
                                             required
                                         />
                                         <Input
-                                            label="Password"
-                                            htmlFor="password"
-                                            type="text"
-                                            name="password"
-                                            id="password"
-                                            placeholder="********"
+                                            label="Stok"
+                                            htmlFor="stok"
+                                            type="number"
+                                            name="stok"
+                                            id="stok"
+                                            placeholder="Stok barang"
                                             register={register}
                                             errors={errors}
                                             required
                                         />
                                         <Input
-                                            label="Konfirmasi Password"
-                                            htmlFor="konfirmasi"
+                                            label="Deskripsi"
+                                            htmlFor="deskripsi"
                                             type="text"
-                                            name="konfirmasi"
-                                            id="konfirmasi"
-                                            placeholder="Konfirmasi Password"
+                                            name="deskripsi"
+                                            id="deskripsi"
+                                            placeholder="Deskripsi"
                                             register={register}
                                             errors={errors}
-                                            required
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -110,4 +110,4 @@ function ModalTambahAkun() {
     );
 }
 
-export default ModalTambahAkun;
+export default ModalEditBarang;

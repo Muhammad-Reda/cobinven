@@ -1,6 +1,6 @@
-import ButtonYellow from "./ButtonYellow";
-import { HiOutlinePencilAlt } from "react-icons/hi";
 import PopupModal from "../PopupModal";
+import ModalEditBarang from "../ModalEditBarang";
+import Pagination from "./Pagination";
 
 function TableBarang({ data }) {
     return (
@@ -44,17 +44,14 @@ function TableBarang({ data }) {
                                 {data.deskripsi}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap text-right">
-                                <ButtonYellow
-                                    type="button"
-                                    callback={() => alert("Edit" + data.id)}
-                                    content=<HiOutlinePencilAlt />
-                                />
+                                <ModalEditBarang />
                                 <PopupModal />
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+            <Pagination callback={() => alert("Callback pagination")} />
         </div>
     );
 }

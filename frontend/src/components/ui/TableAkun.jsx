@@ -1,6 +1,6 @@
-import ButtonYellow from "./ButtonYellow";
-import { HiOutlinePencilAlt } from "react-icons/hi";
 import PopupModal from "../PopupModal";
+import ModalEditAkun from "../ModalEditAkun";
+import Pagination from "./Pagination";
 
 function TableAkun({ data }) {
     return (
@@ -32,17 +32,14 @@ function TableAkun({ data }) {
                                 {data.username}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap text-right">
-                                <ButtonYellow
-                                    type="button"
-                                    callback={() => alert("Edit" + data.id)}
-                                    content=<HiOutlinePencilAlt />
-                                />
+                                <ModalEditAkun />
                                 <PopupModal />
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+            <Pagination callback={() => alert("Callback pagination")} />
         </div>
     );
 }

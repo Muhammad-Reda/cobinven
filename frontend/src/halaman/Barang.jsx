@@ -1,5 +1,7 @@
 import TableBarang from "../components/ui/TableBarang";
 import ModalTambahBarang from "../components/ModalTambahBarang";
+import Search from "../components/ui/Search";
+
 function Barang() {
     const data = [
         {
@@ -34,10 +36,11 @@ function Barang() {
 
     return (
         <>
-            <h2 className=" uppercase text-center font-bold text-3xl p-4">
+            <h2 className=" uppercase  font-bold text-3xl p-4 mb-8">
                 Daftar data barang
             </h2>
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+                <Search placeholder="Cari nama barang" />
                 <ModalTambahBarang />
             </div>
 
