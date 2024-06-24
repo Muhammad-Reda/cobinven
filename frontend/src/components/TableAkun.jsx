@@ -1,8 +1,11 @@
-import PopupModal from "../PopupModal";
-import ModalEditAkun from "../ModalEditAkun";
-import Pagination from "./Pagination";
+import PopUpDeleteAkun from "../components/PopUpDeleteAkun";
+import ModalEditAkun from "./ModalEditAkun";
+import Pagination from "./ui/Pagination";
 
-function TableAkun({ data }) {
+function TableAkun({ data, token, updateData }) {
+    const handleStatus = (value) => {
+        updateData(value);
+    };
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-gray-100 ">
@@ -20,8 +23,8 @@ function TableAkun({ data }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((data) => (
-                        <tr className="bg-white border-b " key={data.kode}>
+                    {data.map((data, i) => (
+                        <tr className="bg-white border-b " key={i}>
                             <th
                                 scope="row"
                                 className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap "
@@ -32,8 +35,16 @@ function TableAkun({ data }) {
                                 {data.username}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap text-right">
-                                <ModalEditAkun />
-                                <PopupModal />
+                                <ModalEditAkun
+                                    id={data.id}
+                                    status={handleStatus}
+                                    token={token}
+                                />
+                                <PopUpDeleteAkun
+                                    token={token}
+                                    id={data.id}
+                                    status={handleStatus}
+                                />
                             </td>
                         </tr>
                     ))}

@@ -1,7 +1,12 @@
 import connection from "../config/databse.js";
 
-export const getAllBarang = () => {
-    const query = "SELECT * FROM barang";
+export const getAllBarang = ({ search, limit, offset }) => {
+    const query = `SELECT * FROM barang WHERE nama LIKE CONCAT('%','${search}', '%') ORDER BY nama ASC LIMIT ${limit} OFFSET ${offset} `;
+    return connection.execute(query);
+};
+
+export const totalPageData = () => {
+    const query = `SELECT COUNT(*) AS count FROM barang`;
     return connection.execute(query);
 };
 

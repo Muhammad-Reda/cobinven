@@ -1,7 +1,8 @@
 import connection from "../config/databse.js";
 
 export const getAllBarangMasuk = () => {
-    const query = "SELECT * FROM barang_masuk";
+    const query =
+        "SELECT bm.id, bm.kode_barang, b.nama, bm.tanggal_masuk, bm.jumlah, bm.deskripsi FROM barang_masuk as bm JOIN barang as b WHERE b.kode = bm.kode_barang";
     return connection.execute(query);
 };
 

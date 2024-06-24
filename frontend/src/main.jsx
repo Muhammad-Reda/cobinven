@@ -10,6 +10,11 @@ import BarangKeluar from "./halaman/BarangKeluar.jsx";
 import BarangMasuk from "./halaman/BarangMasuk.jsx";
 import Login from "./halaman/Login.jsx";
 
+import axios from "axios";
+import Logout from "./components/Logout.jsx";
+
+axios.defaults.withCredentials = true;
+
 const AppLayout = () => (
     <>
         <div className="flex h-screen">
@@ -50,6 +55,10 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login />,
+    },
+    {
+        path: "logout",
+        element: <Logout />,
     },
 ]);
 

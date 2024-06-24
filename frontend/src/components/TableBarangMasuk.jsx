@@ -1,11 +1,12 @@
-import ButtonYellow from "./ButtonYellow";
-import PopupModal from "../PopupModal";
-import ModalEditBarangInOut from "../ModalEditBarangInOut";
+import PopUpDeleteBarangMasuk from "../components/PopUpDeleteBarangMasuk";
+import ModalEditBarangMasuk from "./ModalEditBarangMasuk";
 
-import { HiOutlinePencilAlt } from "react-icons/hi";
-import Pagination from "./Pagination";
+import Pagination from "./ui/Pagination";
 
-function TableBarangInOut({ data }) {
+function TableBarangMasuk({ data, token, updateData }) {
+    const handleStatus = (value) => {
+        updateData(value);
+    };
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-gray-100 ">
@@ -35,8 +36,8 @@ function TableBarangInOut({ data }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((data) => (
-                        <tr className="bg-white border-b " key={data.id}>
+                    {data.map((data, i) => (
+                        <tr className="bg-white border-b " key={i}>
                             <th
                                 scope="row"
                                 className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap "
@@ -44,23 +45,31 @@ function TableBarangInOut({ data }) {
                                 {data.id}
                             </th>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
-                                {data.kodeBarang}
+                                {data.kode_barang}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
                                 {data.nama}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
-                                {data.tanggal}
+                                {data.tanggal_masuk}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
                                 {data.jumlah}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
-                                {data.deskripsi}
+                                {data.deskripsi ? data.deskripsi : "Deskripsi"}
                             </td>
                             <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap text-right">
-                                <ModalEditBarangInOut />
-                                <PopupModal />
+                                <ModalEditBarangMasuk
+                                    id={data.id}
+                                    status={handleStatus}
+                                    token={token}
+                                />
+                                <PopUpDeleteBarangMasuk
+                                    token={token}
+                                    id={data.id}
+                                    status={handleStatus}
+                                />
                             </td>
                         </tr>
                     ))}
@@ -71,4 +80,4 @@ function TableBarangInOut({ data }) {
     );
 }
 
-export default TableBarangInOut;
+export default TableBarangMasuk;

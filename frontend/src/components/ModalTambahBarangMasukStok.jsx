@@ -2,20 +2,19 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-import { IoIosAdd } from "react-icons/io";
-
-import { tambahBarang } from "../api/barang";
-
 import ButtonGreen from "./ui/ButtonGreen";
 import ButtonRed from "./ui/ButtonRed";
-import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
+import ButtonXClose from "./ui/ButtonXClose";
 
-function ModalTambahBarang({ status, failed }) {
+import { IoIosAdd } from "react-icons/io";
+import { tambahBarangMasukStok } from "../api/barangMasuk";
+
+function ModalTambahBarangMasukStok({ status, failed }) {
     const [showModal, setShowModal] = useState(false);
     const [kode, setKode] = useState("");
-    const [nama, setNama] = useState("");
-    const [stok, setStok] = useState(0);
+    const [tanggal, setTanggal] = useState("");
+    const [jumlah, setJumlah] = useState(0);
     const [deskripsi, setDeskripsi] = useState("");
     const [token, setToken] = useState("");
     const [erorrMsg, setErrorMsg] = useState("");
@@ -42,8 +41,8 @@ function ModalTambahBarang({ status, failed }) {
         refreshToken();
     }, [showModal]);
 
-    const callTambahBarang = () => {
-        tambahBarang({ token, kode, nama, stok, deskripsi })
+    const callTambahBarangMasuk = () => {
+        tambahBarangMasukStok({ token, kode, tanggal, jumlah, deskripsi })
             .then((response) => {
                 status("sukses");
                 setShowModal(false);
@@ -61,6 +60,7 @@ function ModalTambahBarang({ status, failed }) {
     return (
         <>
             <ButtonGreen
+                text="STOK"
                 type="button"
                 callback={() => setShowModal(true)}
                 content=<IoIosAdd size={20} />
@@ -73,8 +73,8 @@ function ModalTambahBarang({ status, failed }) {
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 {/*header*/}
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                                    <h3 className="text-3xl font-semibold uppercase">
-                                        Tambah Data Barang
+                                    <h3 className=" uppercase text-3xl font-semibold">
+                                        Tambah Data Stok
                                     </h3>
                                     <ButtonXClose
                                         callback={() => {
@@ -85,7 +85,9 @@ function ModalTambahBarang({ status, failed }) {
                                 </div>
                                 {/*body*/}
                                 <form
-                                    onSubmit={handleSubmit(callTambahBarang)}
+                                    onSubmit={handleSubmit(
+                                        callTambahBarangMasuk
+                                    )}
                                     className="p-4 md:p-5"
                                 >
                                     <div className="flex justify-center">
@@ -93,63 +95,64 @@ function ModalTambahBarang({ status, failed }) {
                                             {erorrMsg && erorrMsg}
                                         </p>
                                     </div>
-                                    <div className="grid gap-4 mb-4 grid-cols-2">
-                                        <Input
-                                            label="Kode"
-                                            htmlFor="Kode"
-                                            type="text"
-                                            name="kode"
-                                            id="kode"
-                                            placeholder="Kode barang"
-                                            register={register}
-                                            errors={errors}
-                                            required
-                                            onChange={(e) =>
-                                                setKode(e.target.value)
-                                            }
-                                        />
-                                        <Input
-                                            label="Nama"
-                                            htmlFor="nama"
-                                            type="text"
-                                            name="nama"
-                                            id="nama"
-                                            placeholder="Nama barang"
-                                            register={register}
-                                            errors={errors}
-                                            required
-                                            onChange={(e) =>
-                                                setNama(e.target.value)
-                                            }
-                                        />
-                                        <Input
-                                            label="Stok"
-                                            htmlFor="stok"
-                                            type="number"
-                                            name="stok"
-                                            id="stok"
-                                            placeholder="Stok barang"
-                                            register={register}
-                                            errors={errors}
-                                            required
-                                            onChange={(e) =>
-                                                setStok(e.target.value)
-                                            }
-                                        />
-                                        <Input
-                                            label="Deskripsi"
-                                            htmlFor="deskripsi"
-                                            type="text"
-                                            name="deskripsi"
-                                            id="deskripsi"
-                                            placeholder="Deskripsi"
-                                            register={register}
-                                            errors={errors}
-                                            onChange={(e) =>
-                                                setDeskripsi(e.target.value)
-                                            }
-                                        />
-                                    </div>
+                                    <Input
+                                        label="Kode"
+                                        htmlFor="kode"
+                                        placeholder="Kode Barang"
+                                        name="kode"
+                                        id="kode"
+                                        type="text"
+                                        register={register}
+                                        errors={errors}
+                                        required
+                                        onChange={(e) =>
+                                            setKode(e.target.value)
+                                        }
+                                    />
+
+                                    <Input
+                                        label="Tanggal"
+                                        htmlFor="tanggal"
+                                        placeholder="Tanggal"
+                                        name="tanggal"
+                                        id="tanggal"
+                                        type="date"
+                                        register={register}
+                                        errors={errors}
+                                        required
+                                        onChange={(e) =>
+                                            setTanggal(e.target.value)
+                                        }
+                                    />
+
+                                    <Input
+                                        label="Jumlah"
+                                        htmlFor="jumlah"
+                                        placeholder="Jumlah"
+                                        name="jumlah"
+                                        id="jumlah"
+                                        type="number"
+                                        register={register}
+                                        errors={errors}
+                                        required
+                                        onChange={(e) =>
+                                            setJumlah(e.target.value)
+                                        }
+                                    />
+
+                                    <Input
+                                        label="Deskripsi"
+                                        htmlFor="deskripsi"
+                                        placeholder="Deskripsi"
+                                        name="deskripsi"
+                                        id="deskripsi"
+                                        type="text-area"
+                                        register={register}
+                                        errors={errors}
+                                        onChange={(e) =>
+                                            setDeskripsi(e.target.value)
+                                        }
+                                    />
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                         <ButtonRed
                                             type="button"
@@ -166,6 +169,7 @@ function ModalTambahBarang({ status, failed }) {
                                         />
                                     </div>
                                 </form>
+                                {/*footer*/}
                             </div>
                         </div>
                     </div>
@@ -176,4 +180,4 @@ function ModalTambahBarang({ status, failed }) {
     );
 }
 
-export default ModalTambahBarang;
+export default ModalTambahBarangMasukStok;

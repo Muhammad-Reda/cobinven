@@ -11,18 +11,18 @@ import { register } from "../controller/auth.js";
 const router = express.Router();
 
 // Get all users
-router.get("/", accessValidation, getAllusers);
+router.get("/", getAllusers);
 
 //Get user by id
-router.get("/:id", accessValidation, getUser);
+router.get("/:id", getUser);
 
 //Create user
-router.post("/", accessValidation, register);
+router.post("/", register);
 
 //Update user
-router.patch("/:id", accessValidation, updateUser);
+router.patch("/:id", updateUser);
 
 //Delete user
-router.delete("/:id", accessValidation, deleteUser);
+router.delete("/:id", deleteUser);
 
 export default router;

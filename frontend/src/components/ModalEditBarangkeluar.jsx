@@ -8,9 +8,16 @@ import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
 
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import { editBarangKeluar } from "../api/barangKeluar";
 
-function ModalEditBarangInOut() {
+function ModalEditBarangKeluar({ id, status }) {
     const [showModal, setShowModal] = useState(false);
+    const [kode, setKode] = useState("");
+    const [tanggal, setTanggal] = useState("");
+    const [jumlah, setJumlah] = useState(0);
+    const [deskripsi, setDeskripsi] = useState("");
+    const [erorrMsg, setErrorMsg] = useState("");
+    const [token, setToken] = useState("");
     const {
         register,
         handleSubmit,
@@ -18,8 +25,30 @@ function ModalEditBarangInOut() {
         reset,
     } = useForm();
 
-    const handleClickSuccess = () => {
-        setShowModal(false);
+    const refreshToken = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/token");
+            setToken(response.data.accessToken);
+        } catch (error) {
+            if (error.response) {
+                navigate("/login");
+            }
+        }
+    };
+
+    const callEditBarangKeluar = () => {
+        editBarangKeluar({ token, kode, tanggal, deskripsi, jumlah, id })
+            .then((response) => {
+                status("sukses");
+                setShowModal(false);
+                reset();
+                setErrorMsg("");
+            })
+            .catch((error) => {
+                setErrorMsg(error);
+                status("gagal");
+                reset();
+            });
     };
 
     return (
@@ -46,11 +75,9 @@ function ModalEditBarangInOut() {
                                 </div>
                                 {/*body*/}
                                 <form
-                                    onSubmit={handleSubmit(() => {
-                                        reset();
-                                        alert("Handle submit");
-                                        setShowModal(false);
-                                    })}
+                                    onSubmit={handleSubmit(
+                                        callEditBarangKeluar
+                                    )}
                                     className="p-4 md:p-5"
                                 >
                                     <div className="grid gap-4 mb-4 grid-cols-2">
@@ -64,6 +91,9 @@ function ModalEditBarangInOut() {
                                             register={register}
                                             errors={errors}
                                             required
+                                            onChange={(e) =>
+                                                setKode(e.target.value)
+                                            }
                                         />
 
                                         <Input
@@ -76,6 +106,9 @@ function ModalEditBarangInOut() {
                                             register={register}
                                             errors={errors}
                                             required
+                                            onChange={(e) =>
+                                                setTanggal(e.target.value)
+                                            }
                                         />
                                         <Input
                                             label="Jumlah"
@@ -87,6 +120,9 @@ function ModalEditBarangInOut() {
                                             register={register}
                                             errors={errors}
                                             required
+                                            onChange={(e) =>
+                                                setJumlah(e.target.value)
+                                            }
                                         />
 
                                         <Input
@@ -98,6 +134,9 @@ function ModalEditBarangInOut() {
                                             type="text-area"
                                             register={register}
                                             errors={errors}
+                                            onChange={(e) =>
+                                                setDeskripsi(e.target.value)
+                                            }
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -123,4 +162,4 @@ function ModalEditBarangInOut() {
     );
 }
 
-export default ModalEditBarangInOut;
+export default ModalEditBarangKeluar;

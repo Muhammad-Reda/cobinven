@@ -13,21 +13,21 @@ import {
 const router = express.Router();
 
 //GET all barang-masuk
-router.get("/", accessValidation, getAllBarangMasuk);
+router.get("/", getAllBarangMasuk);
 
 //Get barang-masuk by id
-router.get("/:id", accessValidation, getBarangMasuk);
+router.get("/:id", getBarangMasuk);
 
 //Tambah stok barang
-router.post("/stok", accessValidation, createNewBarangMasukStok);
+router.post("/stok", createNewBarangMasukStok);
 
 //create new barang masuk and new barang
-router.post("/barang", accessValidation, createNewBarangMasukBarang);
+router.post("/barang", createNewBarangMasukBarang);
 
 //update barang
-router.patch("/:id", accessValidation, updateBarangMasuk);
+router.patch("/:id", updateBarangMasuk);
 
 // //Delete barang
-router.delete("/:id", accessValidation, deleteBarangMasuk);
+router.delete("/:id", deleteBarangMasuk);
 
 export default router;

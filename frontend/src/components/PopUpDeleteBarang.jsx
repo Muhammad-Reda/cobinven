@@ -3,10 +3,23 @@ import ButtonRed from "./ui/ButtonRed";
 import ButtonGreen from "./ui/ButtonGreen";
 import { IoTrashBinOutline } from "react-icons/io5";
 import { CgDanger } from "react-icons/cg";
-import { IoIosClose } from "react-icons/io";
 
-export default function PopupModal() {
+import { deleteBarang } from "../api/barang";
+
+export default function PopupModal({ token, kode, status }) {
     const [showModal, setShowModal] = useState(false);
+
+    const callDeleteBarang = () => {
+        deleteBarang({ token, kode })
+            .then((response) => {
+                status("sukses");
+                setShowModal(false);
+            })
+            .catch((error) => {
+                status("gagal");
+            });
+    };
+
     return (
         <>
             <ButtonRed
@@ -38,7 +51,7 @@ export default function PopupModal() {
                                     <div>
                                         <ButtonRed
                                             type="button"
-                                            callback={() => setShowModal(false)}
+                                            callback={callDeleteBarang}
                                             content="Yes"
                                         />
                                     </div>

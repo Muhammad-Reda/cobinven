@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import ButtonGreen from "./ui/ButtonGreen";
 import ButtonXClose from "./ui/ButtonXClose";
 import ButtonRed from "./ui/ButtonRed";
 import Input from "./ui/Input";
+import { tambahAkun } from "../api/akun";
 
 import { IoIosAdd } from "react-icons/io";
 
-function ModalTambahAkun() {
+function ModalTambahAkun({ status, failed }) {
     const [showModal, setShowModal] = useState(false);
+    const [token, setToken] = useState("");
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [erorrMsg, setErrorMsg] = useState("");
     const {
         register,
         handleSubmit,
@@ -17,8 +23,39 @@ function ModalTambahAkun() {
         reset,
     } = useForm();
 
-    const handleClickSuccess = () => {
-        setShowModal(false);
+    const refreshToken = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/token");
+            setToken(response.data.accessToken);
+        } catch (error) {
+            if (error.response) {
+                navigate("/login");
+            }
+        }
+    };
+
+    useEffect(() => {
+        refreshToken();
+    }, [showModal]);
+
+    const callTambahAkun = () => {
+        tambahAkun({
+            token,
+            username,
+            password,
+        })
+            .then((response) => {
+                status("sukses");
+                setShowModal(false);
+                reset();
+                setErrorMsg("");
+            })
+            .catch((error) => {
+                setErrorMsg(error.response.data.message);
+                status("gagal");
+                failed(erorrMsg);
+                reset();
+            });
     };
 
     return (
@@ -45,14 +82,13 @@ function ModalTambahAkun() {
                                 </div>
                                 {/*body*/}
                                 <form
-                                    onSubmit={handleSubmit(() => {
-                                        reset();
-                                        alert("Handle submit");
-                                        setShowModal(false);
-                                    })}
+                                    onSubmit={handleSubmit(callTambahAkun)}
                                     className="p-4 md:p-5"
                                 >
                                     <div className="grid gap-4 mb-4 grid-cols-2">
+                                        <p className="text-red-500 text-xl">
+                                            {erorrMsg && erorrMsg}
+                                        </p>
                                         <Input
                                             label="Username"
                                             htmlFor="username"
@@ -63,35 +99,33 @@ function ModalTambahAkun() {
                                             register={register}
                                             errors={errors}
                                             required
+                                            onChange={(e) =>
+                                                setUsername(e.target.value)
+                                            }
                                         />
                                         <Input
                                             label="Password"
                                             htmlFor="password"
-                                            type="text"
+                                            type="password"
                                             name="password"
                                             id="password"
                                             placeholder="********"
                                             register={register}
                                             errors={errors}
                                             required
-                                        />
-                                        <Input
-                                            label="Konfirmasi Password"
-                                            htmlFor="konfirmasi"
-                                            type="text"
-                                            name="konfirmasi"
-                                            id="konfirmasi"
-                                            placeholder="Konfirmasi Password"
-                                            register={register}
-                                            errors={errors}
-                                            required
+                                            onChange={(e) =>
+                                                setPassword(e.target.value)
+                                            }
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                         <ButtonRed
                                             type="button"
                                             content="Close"
-                                            callback={() => setShowModal(false)}
+                                            callback={() => {
+                                                setShowModal(false);
+                                                setErrorMsg("");
+                                            }}
                                         />
 
                                         <ButtonGreen

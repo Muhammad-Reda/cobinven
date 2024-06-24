@@ -1,11 +1,45 @@
-import { useState } from "react";
 import { SidebarData } from "./SidebarData";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { CiPower } from "react-icons/ci";
 
 function Navbar() {
+    const [token, setToken] = useState("");
+    const navigate = useNavigate();
     const [click, setClick] = useState(false);
 
+    const refreshToken = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/token");
+            setToken(response.data.accessToken);
+        } catch (error) {
+            if (error.response) {
+                console.log("Gagal");
+            }
+        }
+    };
+    const logout = async () => {
+        try {
+            const response = await axios.delete(
+                "http://localhost:4000/auth/logout",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log(response);
+            navigate("/login");
+        } catch (error) {
+            if (error.response) console.log("Gagal logout: ", error.response);
+        }
+    };
+    useEffect(() => {
+        refreshToken();
+    }, [click]);
     return (
         <>
             <div className="flex items-start h-screen">
@@ -37,6 +71,15 @@ function Navbar() {
                                 {!click && item.title}
                             </NavLink>
                         ))}
+                        <div className=" mt-16">
+                            <NavLink
+                                className="flex items-end gap-x-3 transition-all duration-300 text-black p-3 b rounded-md hover:bg-gray-100 "
+                                onClick={logout}
+                            >
+                                <CiPower />
+                                {!click && "Logout"}
+                            </NavLink>
+                        </div>
                     </ul>
                 </div>
                 <button

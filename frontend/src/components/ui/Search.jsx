@@ -1,6 +1,6 @@
 import { CiSearch } from "react-icons/ci";
 
-function Search({ placeholder }) {
+function Search({ placeholder, onchange, onClick }) {
     return (
         <div className="mb-3 xl:w-96">
             <div className="relative mb-4 flex w-full flex-wrap items-stretch">
@@ -10,6 +10,7 @@ function Search({ placeholder }) {
                     placeholder={placeholder}
                     aria-label="Search"
                     aria-describedby="button-addon2"
+                    onChange={onchange}
                 />
 
                 {/* <!--Search icon--> */}
@@ -17,7 +18,7 @@ function Search({ placeholder }) {
                 <button
                     className=" rounded-full px-3 py-1.5 text-center text-base font-normal hover:bg-gray-100"
                     type="button"
-                    onClick={() => alert("Button search")}
+                    onClick={onClick}
                 >
                     <CiSearch />
                 </button>

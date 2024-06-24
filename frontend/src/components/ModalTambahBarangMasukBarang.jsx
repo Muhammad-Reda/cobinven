@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import ButtonGreen from "./ui/ButtonGreen";
 import ButtonRed from "./ui/ButtonRed";
 import Input from "./ui/Input";
+import ButtonXClose from "./ui/ButtonXClose";
+import axios from "axios";
 
 import { IoIosAdd } from "react-icons/io";
-import { IoIosClose } from "react-icons/io";
 
-function ModalTambahBarangInOut({ text, text1, text2 }) {
+import { tambahBarangMasukBarang } from "../api/barangMasuk";
+
+function ModalTambahBarangMasukBarang({ status, failed }) {
     const [showModal, setShowModal] = useState(false);
+    const [token, setToken] = useState("");
+
+    const [kode, setKode] = useState("");
+    const [nama, setNama] = useState("");
+    const [tanggal, setTanggal] = useState("");
+    const [jumlah, setJumlah] = useState(0);
+    const [deskripsi, setDeskripsi] = useState("");
+    const [erorrMsg, setErrorMsg] = useState("");
 
     const {
         register,
@@ -18,15 +29,48 @@ function ModalTambahBarangInOut({ text, text1, text2 }) {
         reset,
     } = useForm();
 
-    const handleClickSuccess = () => {
-        setShowModal(false);
+    const refreshToken = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/token");
+            setToken(response.data.accessToken);
+        } catch (error) {
+            if (error.response) {
+                navigate("/login");
+            }
+        }
+    };
+
+    useEffect(() => {
+        refreshToken();
+    }, [showModal]);
+
+    const callTambahBarangMasuk = () => {
+        tambahBarangMasukBarang({
+            token,
+            kode,
+            tanggal,
+            deskripsi,
+            jumlah,
+            nama,
+        })
+            .then((response) => {
+                status("sukses");
+                setShowModal(false);
+                reset();
+                setErrorMsg("");
+            })
+            .catch((error) => {
+                setErrorMsg(error.response.data.message);
+                status("gagal");
+                failed(erorrMsg);
+                reset();
+            });
     };
 
     return (
         <>
             <ButtonGreen
-                text={text1}
-                text2={text2}
+                text="BARANG"
                 type="button"
                 callback={() => setShowModal(true)}
                 content=<IoIosAdd size={20} />
@@ -40,24 +84,27 @@ function ModalTambahBarangInOut({ text, text1, text2 }) {
                                 {/*header*/}
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                                     <h3 className=" uppercase text-3xl font-semibold">
-                                        Tambah Data {text}
+                                        Tambah Data Barang
                                     </h3>
-                                    <button
-                                        className="p-1 ml-auto bg-transparent border-0 text-black opacity-60 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                                        onClick={() => setShowModal(false)}
-                                    >
-                                        <IoIosClose />
-                                    </button>
+                                    <ButtonXClose
+                                        callback={() => {
+                                            setShowModal(false);
+                                            setErrorMsg("");
+                                        }}
+                                    />
                                 </div>
                                 {/*body*/}
                                 <form
-                                    onSubmit={handleSubmit(() => {
-                                        reset();
-                                        alert("Handle submit");
-                                        setShowModal(false);
-                                    })}
+                                    onSubmit={handleSubmit(
+                                        callTambahBarangMasuk
+                                    )}
                                     className="p-4 md:p-5"
                                 >
+                                    <div className="flex justify-center">
+                                        <p className="text-red-500 text-xl">
+                                            {erorrMsg && erorrMsg}
+                                        </p>
+                                    </div>
                                     <Input
                                         label="Kode"
                                         htmlFor="kode"
@@ -68,6 +115,24 @@ function ModalTambahBarangInOut({ text, text1, text2 }) {
                                         register={register}
                                         errors={errors}
                                         required
+                                        onChange={(e) =>
+                                            setKode(e.target.value)
+                                        }
+                                    />
+
+                                    <Input
+                                        label="Nama"
+                                        htmlFor="nama"
+                                        placeholder="Nama Barang"
+                                        name="nama"
+                                        id="nama"
+                                        type="text"
+                                        register={register}
+                                        errors={errors}
+                                        required
+                                        onChange={(e) =>
+                                            setNama(e.target.value)
+                                        }
                                     />
 
                                     <Input
@@ -80,7 +145,11 @@ function ModalTambahBarangInOut({ text, text1, text2 }) {
                                         register={register}
                                         errors={errors}
                                         required
+                                        onChange={(e) =>
+                                            setTanggal(e.target.value)
+                                        }
                                     />
+
                                     <Input
                                         label="Jumlah"
                                         htmlFor="jumlah"
@@ -91,6 +160,9 @@ function ModalTambahBarangInOut({ text, text1, text2 }) {
                                         register={register}
                                         errors={errors}
                                         required
+                                        onChange={(e) =>
+                                            setJumlah(e.target.value)
+                                        }
                                     />
 
                                     <Input
@@ -102,12 +174,18 @@ function ModalTambahBarangInOut({ text, text1, text2 }) {
                                         type="text-area"
                                         register={register}
                                         errors={errors}
+                                        onChange={(e) =>
+                                            setDeskripsi(e.target.value)
+                                        }
                                     />
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                         <ButtonRed
                                             type="button"
                                             content="Close"
-                                            callback={() => setShowModal(false)}
+                                            callback={() => {
+                                                setShowModal(false);
+                                                setErrorMsg("");
+                                            }}
                                         />
 
                                         <ButtonGreen
@@ -127,4 +205,4 @@ function ModalTambahBarangInOut({ text, text1, text2 }) {
     );
 }
 
-export default ModalTambahBarangInOut;
+export default ModalTambahBarangMasukBarang;

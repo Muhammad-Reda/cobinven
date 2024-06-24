@@ -12,18 +12,18 @@ import {
 const router = express.Router();
 
 //GET all barang
-router.get("/", accessValidation, getAllBarang);
+router.get("/", getAllBarang);
 
 //Get barang by kode
-router.get("/:kode", accessValidation, getBarang);
+router.get("/:kode", getBarang);
 
 //Create new barang
-router.post("/", accessValidation, createNewBarang);
+router.post("/", createNewBarang);
 
 //update barang
-router.patch("/:kode", accessValidation, updateBarang);
+router.patch("/:kode", updateBarang);
 
 //Delete barang
-router.delete("/:kode", accessValidation, deleteBarang);
+router.delete("/:kode", deleteBarang);
 
 export default router;

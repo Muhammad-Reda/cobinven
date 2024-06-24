@@ -8,9 +8,14 @@ import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
 
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import { editBarang } from "../api/barang";
 
-function ModalEditBarang() {
+function ModalEditBarang({ kode, status, token }) {
     const [showModal, setShowModal] = useState(false);
+    const [nama, setNama] = useState("");
+    const [stok, setStok] = useState(0);
+    const [deskripsi, setDeskripsi] = useState("");
+    const [erorrMsg, setErrorMsg] = useState("");
     const {
         register,
         handleSubmit,
@@ -18,8 +23,19 @@ function ModalEditBarang() {
         reset,
     } = useForm();
 
-    const handleClickSuccess = () => {
-        setShowModal(false);
+    const callEditBarang = () => {
+        editBarang({ kode, nama, stok, deskripsi, token })
+            .then((response) => {
+                status("sukses");
+                setShowModal(false);
+                reset();
+                setErrorMsg("");
+            })
+            .catch((error) => {
+                setErrorMsg(error.response.data.message);
+                status("gagal");
+                reset();
+            });
     };
 
     return (
@@ -46,13 +62,14 @@ function ModalEditBarang() {
                                 </div>
                                 {/*body*/}
                                 <form
-                                    onSubmit={handleSubmit(() => {
-                                        reset();
-                                        alert("Handle submit");
-                                        setShowModal(false);
-                                    })}
+                                    onSubmit={handleSubmit(callEditBarang)}
                                     className="p-4 md:p-5"
                                 >
+                                    <div className="flex justify-center">
+                                        <p className="text-red-500 text-xl">
+                                            {erorrMsg && erorrMsg}
+                                        </p>
+                                    </div>
                                     <div className="grid gap-4 mb-4 grid-cols-2">
                                         <Input
                                             label="Nama"
@@ -64,6 +81,9 @@ function ModalEditBarang() {
                                             register={register}
                                             errors={errors}
                                             required
+                                            onChange={(e) =>
+                                                setNama(e.target.value)
+                                            }
                                         />
                                         <Input
                                             label="Stok"
@@ -75,6 +95,9 @@ function ModalEditBarang() {
                                             register={register}
                                             errors={errors}
                                             required
+                                            onChange={(e) =>
+                                                setStok(e.target.value)
+                                            }
                                         />
                                         <Input
                                             label="Deskripsi"
@@ -85,6 +108,9 @@ function ModalEditBarang() {
                                             placeholder="Deskripsi"
                                             register={register}
                                             errors={errors}
+                                            onChange={(e) =>
+                                                setDeskripsi(e.target.value)
+                                            }
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">

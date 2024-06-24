@@ -1,4 +1,3 @@
-import * as FaIcons from "react-icons/fa";
 import * as CiIcons from "react-icons/ci";
 
 export const SidebarData = [

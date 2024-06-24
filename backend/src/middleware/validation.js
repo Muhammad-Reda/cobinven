@@ -9,13 +9,13 @@ export const accessValidation = (req, res, next) => {
         });
 
     const token = authorization.split(" ")[1];
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_ACCESS_SECRET;
 
     try {
         const jwtDecode = jwt.verify(token, secret);
     } catch (error) {
         return res.status(401).json({
-            message: "Unauthorized",
+            message: "Token Unauthorized",
         });
     }
 

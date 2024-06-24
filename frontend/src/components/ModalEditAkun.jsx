@@ -6,11 +6,17 @@ import ButtonGreen from "./ui/ButtonGreen";
 import ButtonRed from "./ui/ButtonRed";
 import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
+import axios from "axios";
+import { editAkun } from "../api/akun";
 
 import { HiOutlinePencilAlt } from "react-icons/hi";
 
-function ModalEditAkun() {
+function ModalEditAkun({ id, status }) {
     const [showModal, setShowModal] = useState(false);
+    const [token, setToken] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [erorrMsg, setErrorMsg] = useState("");
     const {
         register,
         handleSubmit,
@@ -18,8 +24,30 @@ function ModalEditAkun() {
         reset,
     } = useForm();
 
-    const handleClickSuccess = () => {
-        setShowModal(false);
+    const refreshToken = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/token");
+            setToken(response.data.accessToken);
+        } catch (error) {
+            if (error.response) {
+                navigate("/login");
+            }
+        }
+    };
+
+    const callEditAkun = () => {
+        editAkun({ username, password, token, id })
+            .then((response) => {
+                status("sukses");
+                setShowModal(false);
+                reset();
+                setErrorMsg("");
+            })
+            .catch((error) => {
+                setErrorMsg(error);
+                status("gagal");
+                reset();
+            });
     };
 
     return (
@@ -46,11 +74,7 @@ function ModalEditAkun() {
                                 </div>
                                 {/*body*/}
                                 <form
-                                    onSubmit={handleSubmit(() => {
-                                        reset();
-                                        alert("Handle submit");
-                                        setShowModal(false);
-                                    })}
+                                    onSubmit={handleSubmit(callEditAkun)}
                                     className="p-4 md:p-5"
                                 >
                                     <div className="grid gap-4 mb-4 grid-cols-2">
@@ -64,28 +88,23 @@ function ModalEditAkun() {
                                             register={register}
                                             errors={errors}
                                             required
+                                            onChange={(e) =>
+                                                setUsername(e.target.value)
+                                            }
                                         />
                                         <Input
                                             label="Password"
                                             htmlFor="password"
-                                            type="text"
+                                            type="password"
                                             name="password"
                                             id="password"
                                             placeholder="********"
                                             register={register}
                                             errors={errors}
                                             required
-                                        />
-                                        <Input
-                                            label="Konfirmasi Password"
-                                            htmlFor="konfirmasi"
-                                            type="text"
-                                            name="konfirmasi"
-                                            id="konfirmasi"
-                                            placeholder="Konfirmasi Password"
-                                            register={register}
-                                            errors={errors}
-                                            required
+                                            onChange={(e) =>
+                                                setPassword(e.target.value)
+                                            }
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
