@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { IoIosAdd } from "react-icons/io";
 
@@ -19,6 +20,7 @@ function ModalTambahBarang({ status, failed }) {
     const [deskripsi, setDeskripsi] = useState("");
     const [token, setToken] = useState("");
     const [erorrMsg, setErrorMsg] = useState("");
+    const navigate = useNavigate();
 
     const {
         register,
@@ -63,7 +65,7 @@ function ModalTambahBarang({ status, failed }) {
             <ButtonGreen
                 type="button"
                 callback={() => setShowModal(true)}
-                content=<IoIosAdd size={20} />
+                content=<IoIosAdd size={15} />
             />
             {showModal ? (
                 <>

@@ -8,7 +8,7 @@ import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
 
 import { HiOutlinePencilAlt } from "react-icons/hi";
-import { editBarangKeluar } from "../api/barangKeluar";
+import { editBarangKeluar, getBarangKeluarById } from "../api/barangKeluar";
 
 function ModalEditBarangKeluar({ id, status }) {
     const [showModal, setShowModal] = useState(false);
@@ -25,16 +25,13 @@ function ModalEditBarangKeluar({ id, status }) {
         reset,
     } = useForm();
 
-    const refreshToken = async () => {
-        try {
-            const response = await axios.get("http://localhost:4000/token");
-            setToken(response.data.accessToken);
-        } catch (error) {
-            if (error.response) {
-                navigate("/login");
-            }
-        }
-    };
+    function convertToDateInputFormat(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
 
     const callEditBarangKeluar = () => {
         editBarangKeluar({ token, kode, tanggal, deskripsi, jumlah, id })
@@ -45,7 +42,30 @@ function ModalEditBarangKeluar({ id, status }) {
                 setErrorMsg("");
             })
             .catch((error) => {
-                setErrorMsg(error);
+                setErrorMsg(error.response.data.message);
+                status("gagal");
+                reset();
+            });
+    };
+
+    const callGetBarangKeluar = () => {
+        getBarangKeluarById({ token, id })
+            .then((response) => {
+                // Parse the tanggal_keluar string into a Date object
+                const tanggalKeluarDate = new Date(
+                    response.data.data[0].tanggal_keluar
+                );
+
+                // Convert to YYYY-MM-DD format
+                const formattedDate =
+                    convertToDateInputFormat(tanggalKeluarDate);
+                setKode(response.data.data[0].kode_barang);
+                setTanggal(formattedDate);
+                setJumlah(response.data.data[0].jumlah);
+                setDeskripsi(response.data.data[0].deskripsi);
+            })
+            .catch((error) => {
+                setErrorMsg(error.response.data.message);
                 status("gagal");
                 reset();
             });
@@ -55,7 +75,10 @@ function ModalEditBarangKeluar({ id, status }) {
         <>
             <ButtonYellow
                 type="button"
-                callback={() => setShowModal(true)}
+                callback={() => {
+                    setShowModal(true);
+                    callGetBarangKeluar();
+                }}
                 content=<HiOutlinePencilAlt />
             />
             {showModal ? (
@@ -67,7 +90,7 @@ function ModalEditBarangKeluar({ id, status }) {
                                 {/*header*/}
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                                     <h3 className="text-3xl font-semibold uppercase">
-                                        Ubah Data Barang
+                                        Ubah Data Barang Keluar
                                     </h3>
                                     <ButtonXClose
                                         callback={() => setShowModal(false)}
@@ -80,6 +103,7 @@ function ModalEditBarangKeluar({ id, status }) {
                                     )}
                                     className="p-4 md:p-5"
                                 >
+                                    {erorrMsg && erorrMsg}
                                     <div className="grid gap-4 mb-4 grid-cols-2">
                                         <Input
                                             label="Kode"
@@ -94,6 +118,7 @@ function ModalEditBarangKeluar({ id, status }) {
                                             onChange={(e) =>
                                                 setKode(e.target.value)
                                             }
+                                            value={kode}
                                         />
 
                                         <Input
@@ -109,6 +134,7 @@ function ModalEditBarangKeluar({ id, status }) {
                                             onChange={(e) =>
                                                 setTanggal(e.target.value)
                                             }
+                                            value={tanggal}
                                         />
                                         <Input
                                             label="Jumlah"
@@ -123,6 +149,7 @@ function ModalEditBarangKeluar({ id, status }) {
                                             onChange={(e) =>
                                                 setJumlah(e.target.value)
                                             }
+                                            value={jumlah}
                                         />
 
                                         <Input
@@ -137,6 +164,7 @@ function ModalEditBarangKeluar({ id, status }) {
                                             onChange={(e) =>
                                                 setDeskripsi(e.target.value)
                                             }
+                                            value={deskripsi}
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">

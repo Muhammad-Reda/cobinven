@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
-import Inven from "../assets/Inven.jpg";
 import ButtonDefault from "../components/ui/ButtonDefault";
-import Input from "../components/ui/Input";
+import Input from "../components/ui/InputLogin.jsx";
 import AlertRed from "../components/ui/AlertRed.jsx";
 import axios from "axios";
 
@@ -73,62 +72,72 @@ function Login() {
     }, [alert, msg]);
 
     return (
-        <div>
-            <div className=" bg-slate-100 flex justify-center items-center h-screen">
-                {/* Left: Image */}
-                <div className="w-1/2 h-screen hidden lg:block">
-                    <img
-                        src={Inven}
-                        alt="Placeholder Image"
-                        className="object-cover object-center w-full h-full"
-                    />
-                </div>
-                {/* Right: Login Form */}
-
-                <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
-                    {alert && (
-                        <AlertRed
-                            showAlertProps={alert}
-                            text={msg}
-                            buttonX={() => setAlert(false)}
-                        />
-                    )}
-                    <h1 className="text-2xl font-semibold mb-4">Login</h1>
-                    <form onSubmit={handleSubmit(login)}>
-                        {/* Username Input */}
-                        <Input
-                            type="text"
-                            label="Username"
-                            htmlFor="username"
-                            placeholder="Username"
-                            register={register}
-                            errors={errors}
-                            id="username"
-                            name="username"
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
-                        {/* Password Input */}
-                        <Input
-                            type="password"
-                            label="Password"
-                            htmlFor="password"
-                            placeholder="Password"
-                            register={register}
-                            errors={errors}
-                            id="password"
-                            name="password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        {/* Login Button */}
-                        <div className="flex justify-center mt-8">
-                            <ButtonDefault type="submit" content="Login" />
+        <>
+            <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+                <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-sky-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+                    <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+                        <div className="max-w-md mx-auto">
+                            <div>
+                                {alert && (
+                                    <AlertRed
+                                        showAlertProps={alert}
+                                        text={msg}
+                                        buttonX={() => setAlert(false)}
+                                    />
+                                )}
+                                <h1 className="text-2xl font-semibold">
+                                    Login
+                                </h1>
+                            </div>
+                            <div className="divide-y divide-gray-200">
+                                <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                                    <form onSubmit={handleSubmit(login)}>
+                                        {/* Username Input */}
+                                        <Input
+                                            type="text"
+                                            label="Username"
+                                            htmlFor="username"
+                                            placeholder="Username"
+                                            register={register}
+                                            errors={errors}
+                                            id="username"
+                                            name="username"
+                                            onChange={(e) =>
+                                                setUsername(e.target.value)
+                                            }
+                                            required
+                                        />
+                                        {/* Password Input */}
+                                        <Input
+                                            type="password"
+                                            label="Password"
+                                            htmlFor="password"
+                                            placeholder="Password"
+                                            register={register}
+                                            errors={errors}
+                                            id="password"
+                                            name="password"
+                                            onChange={(e) =>
+                                                setPassword(e.target.value)
+                                            }
+                                            required
+                                        />
+                                        {/* Login Button */}
+                                        <div className="flex justify-center mt-8">
+                                            <ButtonDefault
+                                                type="submit"
+                                                content="Login"
+                                            />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

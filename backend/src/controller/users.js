@@ -4,19 +4,35 @@ import {
     createUser as createUserModel,
     updateUser as updateUserModel,
     deleteUser as deleteUserModel,
+    totalPageData as totalPageDataModel,
 } from "../models/users.js";
 import bcrypt from "bcrypt";
 
 export const getAllusers = async (req, res) => {
     try {
-        const [data] = await getAllUsersModel();
+        const page = parseInt(req.query.page || 0);
+        const limit = parseInt(req.query.limit || 20);
+        const search = req.query.search || "";
+        const offset = limit * page;
+        const [data] = await getAllUsersModel({ limit, search, offset });
+        const [totalPageData] = await totalPageDataModel();
+        const totalPage = Math.ceil(+totalPageData[0]?.count / limit);
+
         res.status(200).json({
             message: "Success",
-            data: data,
+            data, // Menggunakan data yang telah diformat
+            pagination: {
+                search,
+                offset,
+                page: +page,
+                limit: +limit,
+                totalPage,
+                rows: totalPageData[0]?.count,
+            },
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: AllUsers",
             error,
         });
     }
@@ -42,7 +58,7 @@ export const getUser = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: User",
             error: error,
         });
     }
@@ -69,7 +85,7 @@ export const updateUser = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: UpdateUser",
             error,
         });
     }
@@ -94,7 +110,7 @@ export const deleteUser = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: DeleteUser",
             error,
         });
     }

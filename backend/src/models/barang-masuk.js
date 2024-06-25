@@ -1,13 +1,17 @@
 import connection from "../config/databse.js";
 
-export const getAllBarangMasuk = () => {
-    const query =
-        "SELECT bm.id, bm.kode_barang, b.nama, bm.tanggal_masuk, bm.jumlah, bm.deskripsi FROM barang_masuk as bm JOIN barang as b WHERE b.kode = bm.kode_barang";
+export const getAllBarangMasuk = ({ search, limit, offset }) => {
+    const query = `SELECT bm.id, bm.kode_barang, b.nama, bm.tanggal_masuk, bm.jumlah, bm.deskripsi FROM barang_masuk as bm JOIN barang as b WHERE b.kode = bm.kode_barang AND b.nama LIKE CONCAT('%','${search}', '%') ORDER BY bm.createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+    return connection.execute(query);
+};
+
+export const totalPageData = () => {
+    const query = `SELECT COUNT(*) AS count FROM barang_masuk`;
     return connection.execute(query);
 };
 
 export const getBarangMasuk = (id) => {
-    const query = `SELECT * FROM barang_masuk WHERE id = ${id}`;
+    const query = `SELECT * FROM barang_masuk as bm JOIN barang as b WHERE b.kode = bm.kode_barang AND id = ${id}`;
     return connection.execute(query);
 };
 

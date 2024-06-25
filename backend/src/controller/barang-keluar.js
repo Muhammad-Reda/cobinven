@@ -5,6 +5,7 @@ import {
     updateBarangKeluar as updateBarangKeluarModel,
     deleteBarangKeluar as deleteBarangKeluarModel,
     kembalikanStok as kembalikanStokModel,
+    totalPageData as totalPageDataModel,
 } from "../models/barang-keluar.js";
 
 import {
@@ -12,16 +13,54 @@ import {
     kurangStok as kurangStokModel,
 } from "../models/barang.js";
 
+import { format } from "date-fns-tz";
+
 export const getAllBarangkeluar = async (req, res) => {
     try {
-        const [data] = await getAllBarangKeluarModel();
+        const page = parseInt(req.query.page || 0);
+        const limit = parseInt(req.query.limit || 20);
+        const search = req.query.search || "";
+        const offset = limit * page;
+        const [data] = await getAllBarangKeluarModel({
+            limit,
+            offset,
+            search,
+        });
+        const [totalPageData] = await totalPageDataModel();
+        const totalPage = Math.ceil(+totalPageData[0]?.count / limit);
+
+        // Fungsi untuk mengkonversi dan memformat tanggal_masuk
+        const convertAndFormatDate = (dateString) => {
+            const timeZone = "Asia/Jakarta"; // Ganti dengan zona waktu yang sesuai
+            const formattedDate = format(new Date(dateString), "dd MMMM yyyy", {
+                timeZone,
+            });
+            return formattedDate;
+        };
+
+        // Memformat tanggal_masuk dalam data
+        const formattedData = data.map((item) => {
+            return {
+                ...item,
+                tanggal_keluar: convertAndFormatDate(item.tanggal_keluar),
+            };
+        });
+
         res.status(200).json({
             message: "Success",
-            data: data,
+            data: formattedData, // Menggunakan data yang telah diformat
+            pagination: {
+                search,
+                offset,
+                page: +page,
+                limit: +limit,
+                totalPage,
+                rows: totalPageData[0]?.count,
+            },
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: AllBarangKeluar",
             error,
         });
     }
@@ -38,13 +77,30 @@ export const getBarangKeluar = async (req, res) => {
             });
         }
 
+        // Fungsi untuk mengkonversi dan memformat tanggal_masuk
+        const convertAndFormatDate = (dateString) => {
+            const timeZone = "Asia/Jakarta"; // Ganti dengan zona waktu yang sesuai
+            const formattedDate = format(new Date(dateString), "dd MMMM yyyy", {
+                timeZone,
+            });
+            return formattedDate;
+        };
+
+        // Memformat tanggal_masuk dalam data
+        const formattedData = data.map((item) => {
+            return {
+                ...item,
+                tanggal_keluar: convertAndFormatDate(item.tanggal_keluar),
+            };
+        });
+
         res.status(200).json({
             message: "Success",
-            data: data,
+            data: formattedData,
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: BarangKeluar",
             error,
         });
     }
@@ -62,7 +118,7 @@ export const createNewBarangKeluar = async (req, res) => {
 
         if (
             foundBarang.length > 0 &&
-            (foundBarang[0].stok <= 0 || foundBarang[0].stok <= body.jumlah)
+            (foundBarang[0].stok <= 0 || foundBarang[0].stok < body.jumlah)
         )
             return res.status(401).json({
                 message: "Jumlah melebihi stok yang tersedia",
@@ -78,7 +134,7 @@ export const createNewBarangKeluar = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: AddBarangKeluar",
             error: error,
         });
     }
@@ -95,7 +151,8 @@ export const updateBarangKeluar = async (req, res) => {
                 message: "Record tidak ditemukan",
             });
         }
-
+        await kembalikanStokModel(data[0].jumlah, data[0].kode_barang);
+        await kurangStokModel(body, body.kode_barang);
         await updateBarangKeluarModel(body, id);
 
         res.status(200).json({
@@ -104,7 +161,7 @@ export const updateBarangKeluar = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami error",
             error,
         });
     }
@@ -129,7 +186,7 @@ export const deleteBarangKeluar = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: DeleteBarangKeluar",
             error,
         });
     }

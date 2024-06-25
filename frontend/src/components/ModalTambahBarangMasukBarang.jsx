@@ -73,7 +73,7 @@ function ModalTambahBarangMasukBarang({ status, failed }) {
                 text="BARANG"
                 type="button"
                 callback={() => setShowModal(true)}
-                content=<IoIosAdd size={20} />
+                content=<IoIosAdd size={15} />
             />
             {showModal ? (
                 <>

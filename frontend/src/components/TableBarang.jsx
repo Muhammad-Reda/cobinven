@@ -1,7 +1,6 @@
 import PopUpDeleteBarang from "./PopUpDeleteBarang";
 import ModalEditBarang from "./ModalEditBarang";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
-import { LuChevronFirst, LuChevronLast } from "react-icons/lu";
 import ReactPaginate from "react-paginate";
 
 function TableBarang({ data, token, updateData, page, pages }) {
@@ -16,7 +15,7 @@ function TableBarang({ data, token, updateData, page, pages }) {
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-gray-100 ">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-400 ">
+                <thead className="text-xs text-black uppercase bg-gray-400 ">
                     <tr>
                         <th scope="col" className="px-6 py-3">
                             No
@@ -43,26 +42,26 @@ function TableBarang({ data, token, updateData, page, pages }) {
                         <tr className="bg-white border-b " key={i}>
                             <th
                                 scope="row"
-                                className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap "
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap "
                             >
                                 {i + 1}
                             </th>
                             <th
                                 scope="row"
-                                className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap "
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap "
                             >
                                 {data.kode}
                             </th>
-                            <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
+                            <td className="px-6 py-4 font-medium text-black whitespace-nowrap">
                                 {data.nama}
                             </td>
-                            <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
-                                {data.stok}
+                            <td className="px-6 py-4 font-medium text-black whitespace-nowrap">
+                                {data.stok == 0 ? "Tidak ada stok" : data.stok}
                             </td>
-                            <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap">
+                            <td className="px-6 py-4 font-medium text-black whitespace-nowrap">
                                 {data.deskripsi}
                             </td>
-                            <td className="px-6 py-4 font-medium text-gray-700 whitespace-nowrap text-right">
+                            <td className="px-6 py-4 font-medium text-black whitespace-nowrap text-right">
                                 <ModalEditBarang
                                     kode={data.kode}
                                     status={handleStatus}

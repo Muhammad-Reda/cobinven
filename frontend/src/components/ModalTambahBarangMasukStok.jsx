@@ -8,10 +8,12 @@ import Input from "./ui/Input";
 import ButtonXClose from "./ui/ButtonXClose";
 
 import { IoIosAdd } from "react-icons/io";
+import { getKodeBarang } from "../api/barang";
 import { tambahBarangMasukStok } from "../api/barangMasuk";
 
 function ModalTambahBarangMasukStok({ status, failed }) {
     const [showModal, setShowModal] = useState(false);
+    const [selectData, setSelectData] = useState([]);
     const [kode, setKode] = useState("");
     const [tanggal, setTanggal] = useState("");
     const [jumlah, setJumlah] = useState(0);
@@ -57,13 +59,27 @@ function ModalTambahBarangMasukStok({ status, failed }) {
             });
     };
 
+    const callGetAllDataBarang = () => {
+        getKodeBarang({ token })
+            .then((response) => {
+                setSelectData(response.data.data);
+            })
+            .catch((error) => {
+                setErrorMsg(error.response.data.message);
+                status("gagal");
+            });
+    };
+
     return (
         <>
             <ButtonGreen
                 text="STOK"
                 type="button"
-                callback={() => setShowModal(true)}
-                content=<IoIosAdd size={20} />
+                callback={() => {
+                    callGetAllDataBarang();
+                    setShowModal(true);
+                }}
+                content=<IoIosAdd size={15} />
             />
             {showModal ? (
                 <>
@@ -95,21 +111,39 @@ function ModalTambahBarangMasukStok({ status, failed }) {
                                             {erorrMsg && erorrMsg}
                                         </p>
                                     </div>
-                                    <Input
-                                        label="Kode"
-                                        htmlFor="kode"
-                                        placeholder="Kode Barang"
-                                        name="kode"
-                                        id="kode"
-                                        type="text"
-                                        register={register}
-                                        errors={errors}
-                                        required
-                                        onChange={(e) =>
-                                            setKode(e.target.value)
-                                        }
-                                    />
-
+                                    <div>
+                                        <label
+                                            htmlFor="kode"
+                                            className="block mb-2 text-sm font-medium text-black"
+                                        >
+                                            Kode
+                                        </label>
+                                        <select
+                                            className="block w-full p-2 mb-6 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                                            {...register("kode", {
+                                                required: "Kode is required",
+                                            })}
+                                            onChange={(e) =>
+                                                setKode(e.target.value)
+                                            }
+                                        >
+                                            <option value="">Pilih kode</option>
+                                            {selectData.map((item, i) => (
+                                                <option
+                                                    className="option"
+                                                    key={i}
+                                                    value={item.kode}
+                                                >
+                                                    {item.kode} - {item.nama}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.kode && (
+                                            <span className="text-red-600">
+                                                {errors.kode.message}
+                                            </span>
+                                        )}
+                                    </div>
                                     <Input
                                         label="Tanggal"
                                         htmlFor="tanggal"

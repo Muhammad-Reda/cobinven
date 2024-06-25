@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { getDataAkun } from "../api/akun";
+import Top from "../components/ui/Top";
 const dataKosong = [
     {
         kode: 0,
@@ -19,6 +20,12 @@ function Akun() {
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
+    const [limit, setLimit] = useState(10);
+    const [rows, setRows] = useState(0);
+    const [page, setPage] = useState(0);
+    const [pages, setPages] = useState(0);
+    const [keyword, setKeyword] = useState("");
+
     const refreshToken = async () => {
         try {
             const response = await axios.get("http://localhost:4000/token");
@@ -31,15 +38,16 @@ function Akun() {
     };
 
     const callGetDataAkun = () => {
-        getDataAkun({ token })
+        getDataAkun({ token, keyword, limit, page })
             .then((response) => {
                 setData(response.data.data);
+                setPage(response.data.pagination.page);
+                setPages(response.data.pagination.totalPage);
+                setRows(response.data.pagination.rows);
             })
             .catch((error) => {
-                if (error.response) console.log(error.response);
+                if (error.response) setErrorMessage(error.response.message);
             });
-
-        console.log(data);
     };
 
     const handleStatus = (value) => {
@@ -47,6 +55,10 @@ function Akun() {
     };
     const handeFailed = (value) => {
         setErrorMessage(value);
+    };
+
+    const handlePage = (value) => {
+        setPage(value);
     };
 
     useEffect(() => {
@@ -66,14 +78,11 @@ function Akun() {
     useEffect(() => {
         if (token) {
             callGetDataAkun();
-            console.log(data);
         }
-    }, [token, status]);
+    }, [token, status, page, keyword]);
     return (
         <>
-            <h2 className=" uppercase  font-bold text-3xl p-4 mb-8">
-                Daftar data akun
-            </h2>
+            <Top textKanan="daftar data Akun" />
             {status === "sukses" && (
                 <div className="text-white px-6 py-4 border-0 rounded relative mb-4 bg-emerald-500 ">
                     <span className="text-xl inline-block mr-5 align-middle">
@@ -106,20 +115,28 @@ function Akun() {
                     </button>
                 </div>
             )}
-            <div className="flex justify-between">
-                <Search placeholder="Cari username" />
+            <div className="flex justify-between mt-8 w-full px-5">
+                <Search
+                    placeholder="Cari username"
+                    onchange={(e) => setKeyword(e.target.value)}
+                    onClick={callGetDataAkun}
+                />
                 <ModalTambahAkun status={handleStatus} failed={handeFailed} />
             </div>
 
-            {data.length > 0 ? (
-                <TableAkun
-                    data={data}
-                    token={token}
-                    updateData={handleStatus}
-                />
-            ) : (
-                <TableAkun data={dataKosong} />
-            )}
+            <div className="mt-2 w-full px-5">
+                {data.length > 0 ? (
+                    <TableAkun
+                        data={data}
+                        token={token}
+                        updateData={handleStatus}
+                        page={handlePage}
+                        pages={pages}
+                    />
+                ) : (
+                    <TableAkun data={dataKosong} />
+                )}
+            </div>
         </>
     );
 }

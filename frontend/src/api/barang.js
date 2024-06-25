@@ -12,6 +12,27 @@ export const getDataBarang = async ({ token, keyword, limit, page }) => {
     return response;
 };
 
+export const getKodeBarang = async ({ token }) => {
+    const response = await axios.get(
+        "http://localhost:4000/barang/kode/kode-barang",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    return response;
+};
+
+export const getDataBarangByKode = async ({ token, kode }) => {
+    const response = await axios.get(`http://localhost:4000/barang/${kode}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response;
+};
+
 export const tambahBarang = async ({ token, kode, nama, stok, deskripsi }) => {
     const response = await axios.post(
         "http://localhost:4000/barang",
@@ -56,5 +77,14 @@ export const deleteBarang = async ({ token, kode }) => {
             },
         }
     );
+    return response;
+};
+
+export const getDashboard = async ({ token }) => {
+    const response = await axios.get("http://localhost:4000/dashboard", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
     return response;
 };

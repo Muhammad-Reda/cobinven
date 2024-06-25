@@ -63,7 +63,7 @@ export const login = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: Login",
             error,
         });
     }
@@ -88,7 +88,7 @@ export const register = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: Register",
             error,
         });
     }
@@ -103,7 +103,6 @@ export const logout = async (req, res) => {
         const [users] = await getUserById(id);
 
         if (users.length <= 0) res.status(403);
-        console.log(id);
         await nullToken(id);
         res.clearCookie("refreshToken");
         res.sendStatus(200);

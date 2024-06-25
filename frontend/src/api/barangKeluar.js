@@ -1,11 +1,26 @@
 import axios from "axios";
 
-export const getDataBarangKeluar = async ({ token }) => {
-    const response = await axios.get("http://localhost:4000/barang-keluar", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const getDataBarangKeluar = async ({ token, keyword, limit, page }) => {
+    const response = await axios.get(
+        `http://localhost:4000/barang-keluar?search=${keyword}&page=${page}&limit=${limit}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+    return response;
+};
+
+export const getBarangKeluarById = async ({ token, id }) => {
+    const response = await axios.get(
+        `http://localhost:4000/barang-keluar/${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
     return response;
 };
 
@@ -45,8 +60,7 @@ export const editBarangKeluar = async ({
         "http://localhost:4000/barang-keluar/" + id,
         {
             kode_barang: kode,
-            nama,
-            tanggal_masuk: tanggal,
+            tanggal_keluar: tanggal,
             deskripsi,
             jumlah,
         },

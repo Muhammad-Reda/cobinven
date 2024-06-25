@@ -5,7 +5,11 @@ import {
     updateBarang as updateBarangModel,
     deleteBarang as deleteBarangModel,
     totalPageData as totalPageDataModel,
+    dataDashboard as dataDashboardModel,
+    getKodeBarang as getKodeBarangModel,
 } from "../models/barang.js";
+
+import { format } from "date-fns-tz";
 
 export const getAllBarang = async (req, res) => {
     try {
@@ -20,9 +24,27 @@ export const getAllBarang = async (req, res) => {
         });
         const [totalPageData] = await totalPageDataModel();
         const totalPage = Math.ceil(+totalPageData[0]?.count / limit);
+
+        // Fungsi untuk mengkonversi dan memformat tanggal_masuk
+        const convertAndFormatDate = (dateString) => {
+            const timeZone = "Asia/Jakarta"; // Ganti dengan zona waktu yang sesuai
+            const formattedDate = format(new Date(dateString), "dd MMMM yyyy", {
+                timeZone,
+            });
+            return formattedDate;
+        };
+
+        // Memformat tanggal_masuk dalam data
+        const formattedData = data.map((item) => {
+            return {
+                ...item,
+                tanggal: convertAndFormatDate(item.createdAt),
+            };
+        });
+
         res.status(200).json({
             message: "Success",
-            data: data,
+            data: formattedData, // Menggunakan data yang telah diformat
             pagination: {
                 search,
                 offset,
@@ -34,7 +56,7 @@ export const getAllBarang = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error:Baranag",
             error,
         });
     }
@@ -57,7 +79,29 @@ export const getBarang = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: GetBarang",
+            error,
+        });
+    }
+};
+
+export const getKodeBarang = async (req, res) => {
+    try {
+        const [data] = await getKodeBarangModel();
+
+        if (data.length <= 0) {
+            return res.status(404).json({
+                message: "Kode tidak ditemukan",
+            });
+        }
+
+        res.status(200).json({
+            message: "Success",
+            data: data,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Server mengalami Error: GetKodeBarang",
             error,
         });
     }
@@ -81,7 +125,7 @@ export const createNewBarang = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: AddBarang",
             error: error,
         });
     }
@@ -106,7 +150,7 @@ export const updateBarang = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: UpdateBarang",
             error,
         });
     }
@@ -131,7 +175,22 @@ export const deleteBarang = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: "Terjadi error",
+            message: "Server mengalami Error: DeleteBarang",
+            error,
+        });
+    }
+};
+
+export const getDataDashboard = async (req, res) => {
+    try {
+        const [data] = await dataDashboardModel();
+        res.status(200).json({
+            message: "Success",
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Server mengalami Error: Dashboard",
             error,
         });
     }

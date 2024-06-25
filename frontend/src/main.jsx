@@ -13,14 +13,16 @@ import Login from "./halaman/Login.jsx";
 import axios from "axios";
 import Logout from "./components/Logout.jsx";
 
+import Home from "./halaman/Home.jsx";
+
 axios.defaults.withCredentials = true;
 
 const AppLayout = () => (
     <>
-        <div className="flex h-screen">
+        <div className="flex h-screen m-none">
             <Navbar />
             <div
-                className="flex-1 overflow-y-auto p-8"
+                className="flex-1 overflow-y-auto p-8 bg-gray-100"
                 style={{ maxHeight: "100vh" }}
             >
                 <Outlet />
@@ -35,7 +37,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
-                path: "/",
+                path: "/barang",
                 element: <Barang />,
             },
             {
@@ -49,6 +51,10 @@ const router = createBrowserRouter([
             {
                 path: "barang-keluar",
                 element: <BarangKeluar />,
+            },
+            {
+                path: "/",
+                element: <Home />,
             },
         ],
     },

@@ -1,7 +1,12 @@
 import connection from "../config/databse.js";
 
 export const getAllBarang = ({ search, limit, offset }) => {
-    const query = `SELECT * FROM barang WHERE nama LIKE CONCAT('%','${search}', '%') ORDER BY nama ASC LIMIT ${limit} OFFSET ${offset} `;
+    const query = `SELECT * FROM barang WHERE nama LIKE CONCAT('%','${search}', '%') ORDER BY createdAt DESC LIMIT ${limit} OFFSET ${offset} `;
+    return connection.execute(query);
+};
+
+export const getKodeBarang = () => {
+    const query = "SELECT kode, nama FROM barang ORDER BY kode";
     return connection.execute(query);
 };
 
@@ -48,5 +53,10 @@ export const kurangStok = (data, kode) => {
     const query = `UPDATE barang 
     SET stok = stok - ${data.jumlah} 
     WHERE kode = '${kode}'`;
+    return connection.execute(query);
+};
+
+export const dataDashboard = () => {
+    const query = `SELECT (SELECT COUNT(*) FROM barang) AS jumlah_barang, (SELECT COUNT(*) FROM barang_masuk) AS jumlah_barang_masuk,(SELECT COUNT(*) FROM barang_keluar) AS jumlah_barang_keluar`;
     return connection.execute(query);
 };

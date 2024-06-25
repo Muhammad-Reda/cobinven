@@ -17,24 +17,20 @@ function Navbar() {
             setToken(response.data.accessToken);
         } catch (error) {
             if (error.response) {
-                console.log("Gagal");
+                navigate("/login");
             }
         }
     };
     const logout = async () => {
         try {
-            const response = await axios.delete(
-                "http://localhost:4000/auth/logout",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            console.log(response);
+            await axios.delete("http://localhost:4000/auth/logout", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             navigate("/login");
         } catch (error) {
-            if (error.response) console.log("Gagal logout: ", error.response);
+            if (error.response) navigate("/login");
         }
     };
     useEffect(() => {
@@ -84,7 +80,7 @@ function Navbar() {
                 </div>
                 <button
                     onClick={() => setClick(!click)}
-                    className={`bg-white shadow-lg rounded-full p-2 ms-[-20px] mt-4 transition-all duration-300 ${
+                    className={`bg-gray-500 shadow-lg rounded-full p-2 ms-[-20px] mt-4 transition-all duration-300 ${
                         click && "transform rotate-180"
                     }`}
                 >

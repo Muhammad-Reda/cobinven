@@ -5,6 +5,7 @@ import axios from "axios";
 import TableBarang from "../components/TableBarang";
 import ModalTambahBarang from "../components/ModalTambahBarang";
 import Search from "../components/ui/Search";
+import Top from "../components/ui/Top";
 
 import { getDataBarang } from "../api/barang";
 
@@ -51,7 +52,7 @@ function Barang() {
                 setRows(response.data.pagination.rows);
             })
             .catch((error) => {
-                if (error.response) console.log(error.response);
+                if (error) setErrorMessage(error.response.data.message);
             });
     };
 
@@ -88,9 +89,7 @@ function Barang() {
 
     return (
         <>
-            <h2 className=" uppercase  font-bold text-3xl p-4 mb-8">
-                Daftar data barang
-            </h2>
+            <Top textKanan="daftar data barang" />
             {status === "sukses" && (
                 <div className="text-white px-6 py-4 border-0 rounded relative mb-4 bg-emerald-500 ">
                     <span className="text-xl inline-block mr-5 align-middle">
@@ -123,7 +122,7 @@ function Barang() {
                     </button>
                 </div>
             )}
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-8 w-full px-5">
                 <Search
                     placeholder="Cari nama barang"
                     onchange={(e) => setKeyword(e.target.value)}
@@ -133,18 +132,19 @@ function Barang() {
                 <ModalTambahBarang status={handleStatus} failed={handeFailed} />
             </div>
 
-            {data.length > 0 ? (
-                <TableBarang
-                    data={data}
-                    token={token}
-                    updateData={handleStatus}
-                    rows={rows}
-                    page={handlePage}
-                    pages={pages}
-                />
-            ) : (
-                <TableBarang data={dataKosong} />
-            )}
+            <div className="mt-2 w-full px-5">
+                {data.length > 0 ? (
+                    <TableBarang
+                        data={data}
+                        token={token}
+                        updateData={handleStatus}
+                        page={handlePage}
+                        pages={pages}
+                    />
+                ) : (
+                    <TableBarang data={dataKosong} />
+                )}
+            </div>
         </>
     );
 }

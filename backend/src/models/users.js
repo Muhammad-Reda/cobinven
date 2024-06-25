@@ -1,7 +1,12 @@
 import connection from "../config/databse.js";
 
-export const getAllUsers = () => {
-    const query = "SELECT id, username FROM users";
+export const getAllUsers = ({ search, limit, offset }) => {
+    const query = `SELECT id, username FROM users WHERE username LIKE CONCAT('%','${search}', '%') ORDER BY username ASC LIMIT ${limit} OFFSET ${offset}`;
+    return connection.execute(query);
+};
+
+export const totalPageData = () => {
+    const query = `SELECT COUNT(*) AS count FROM users`;
     return connection.execute(query);
 };
 

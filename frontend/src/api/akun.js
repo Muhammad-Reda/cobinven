@@ -1,11 +1,14 @@
 import axios from "axios";
 
-export const getDataAkun = async ({ token }) => {
-    const response = await axios.get("http://localhost:4000/users", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const getDataAkun = async ({ token, keyword, limit, page }) => {
+    const response = await axios.get(
+        `http://localhost:4000/users?search=${keyword}&page=${page}&limit=${limit}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
     return response;
 };
 

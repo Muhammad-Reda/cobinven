@@ -5,6 +5,8 @@ import usersRoutes from "./routes/users.js";
 import barangMasukRoutes from "./routes/barang-masuk.js";
 import barangKeluarRoutes from "./routes/barang-keluar.js";
 import { refreshToken } from "./controller/refreshToken.js";
+import { getDataDashboard } from "./controller/barang.js";
+import { accessValidation } from "./middleware/validation.js";
 
 import "dotenv/config";
 import cors from "cors";
@@ -22,6 +24,7 @@ app.use("/barang-masuk", barangMasukRoutes);
 app.use("/barang-keluar", barangKeluarRoutes);
 
 app.get("/token", refreshToken);
+app.get("/dashboard", accessValidation, getDataDashboard);
 
 app.listen(process.env.PORT || 4000, () => {
     console.log(`Server listening to port: ${process.env.PORT}`);

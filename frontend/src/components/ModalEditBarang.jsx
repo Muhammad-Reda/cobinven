@@ -8,7 +8,7 @@ import ButtonXClose from "./ui/ButtonXClose";
 import Input from "./ui/Input";
 
 import { HiOutlinePencilAlt } from "react-icons/hi";
-import { editBarang } from "../api/barang";
+import { editBarang, getDataBarangByKode } from "../api/barang";
 
 function ModalEditBarang({ kode, status, token }) {
     const [showModal, setShowModal] = useState(false);
@@ -22,6 +22,20 @@ function ModalEditBarang({ kode, status, token }) {
         formState: { errors },
         reset,
     } = useForm();
+
+    const callGetBarang = () => {
+        getDataBarangByKode({ token, kode })
+            .then((response) => {
+                setNama(response.data.data[0].nama);
+                setStok(response.data.data[0].stok);
+                setDeskripsi(response.data.data[0].deskripsi);
+            })
+            .catch((error) => {
+                setErrorMsg(error.response.data.message);
+                status("gagal");
+                reset();
+            });
+    };
 
     const callEditBarang = () => {
         editBarang({ kode, nama, stok, deskripsi, token })
@@ -42,7 +56,10 @@ function ModalEditBarang({ kode, status, token }) {
         <>
             <ButtonYellow
                 type="button"
-                callback={() => setShowModal(true)}
+                callback={() => {
+                    setShowModal(true);
+                    callGetBarang();
+                }}
                 content=<HiOutlinePencilAlt />
             />
             {showModal ? (
@@ -84,6 +101,7 @@ function ModalEditBarang({ kode, status, token }) {
                                             onChange={(e) =>
                                                 setNama(e.target.value)
                                             }
+                                            value={nama}
                                         />
                                         <Input
                                             label="Stok"
@@ -98,6 +116,7 @@ function ModalEditBarang({ kode, status, token }) {
                                             onChange={(e) =>
                                                 setStok(e.target.value)
                                             }
+                                            value={stok}
                                         />
                                         <Input
                                             label="Deskripsi"
@@ -111,6 +130,7 @@ function ModalEditBarang({ kode, status, token }) {
                                             onChange={(e) =>
                                                 setDeskripsi(e.target.value)
                                             }
+                                            value={deskripsi}
                                         />
                                     </div>
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
